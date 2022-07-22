@@ -65,7 +65,7 @@ function hookMethod(targetClass, targetMethod, action, messages) {
             for (var j = 0; j < arguments.length; j++) {
                 var arg_str = JSON.stringify(arguments[j]);
                 if (arg_str.indexOf('Intent') != -1){
-                    arg += '参数' + j + '：' + arg_str.toUri(256) + '\r\n';
+                    arg += '参数' + j + '：' + arguments[j].toUri(256) + '\r\n';
                 }
                 else{
                     arg += '参数' + j + '：' + arg_str + '\r\n';
