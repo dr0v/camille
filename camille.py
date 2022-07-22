@@ -115,6 +115,7 @@ def frida_hook(app_name, use_module, wait_time=0, is_show=True, execl_file=None,
             device = frida.get_usb_device()
         except:
             device = frida.get_remote_device()
+        print('\033[93m','='*20,device,'='*20,'\033[0m')
         pid = app_name if isattach else device.spawn([app_name])
     except Exception as e:
         print("[*] hook error")

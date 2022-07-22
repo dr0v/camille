@@ -63,7 +63,13 @@ function hookMethod(targetClass, targetMethod, action, messages) {
             var temp = this[targetMethod].apply(this, arguments);
             var arg = '';
             for (var j = 0; j < arguments.length; j++) {
-                arg += '参数' + j + '：' + JSON.stringify(arguments[j]) + '\r\n';
+                var arg_str = JSON.stringify(arguments[j]);
+                if (arg_str.indexOf('Intent') != -1){
+                    arg += '参数' + j + '：' + arg_str.toUri(256) + '\r\n';
+                }
+                else{
+                    arg += '参数' + j + '：' + arg_str + '\r\n';
+                }
             }
             if (arg.length == 0) arg = '无参数';
             else arg = arg.slice(0, arg.length - 1);
@@ -364,6 +370,38 @@ function customHook() {
     //     {'methodName': 'getPassword', 'action': action, 'messages': '获取zhengjim密码'},
     //     {'methodName': 'getUser', 'action': action, 'messages': '获取zhengjim用户名'},
     // ]);
+
+    action='收发广播';
+
+    hook('com.android.server.am.BroadcastQueue', [
+        {'methodName': 'processNextBroadcast', 'action': action, 'messages': '处理接收的广播'},
+    ]);
+
+    hook('android.app.ContextImpl', [
+        {'methodName': 'sendBroadcast', 'action': action, 'messages': '发送广播'},
+    ]);
+
+    action='启动服务';
+
+    hook('android.content.ContextWrapper', [
+        {'methodName': 'startService', 'action': action, 'messages': '启动后台服务'},
+        {'methodName': 'bindService', 'action': action, 'messages': '启动绑定服务'},
+        
+    ]);
+
+    
+    action='监听广播';
+
+    hook('android.content.BroadcastReceiver', [
+        {'methodName': 'onReceive', 'action': action, 'messages': '监听并处理广播'},
+        
+    ]);
+
+    hook('android.content.Context',[
+        {'methodName': 'registerReceiver', 'action': action, 'messages': '动态注册广播监听'},
+
+    ]);
+
 }
 
 function useModule(moduleList) {
