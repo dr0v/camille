@@ -113,6 +113,12 @@ def frida_hook(app_name, use_module, wait_time=0, is_show=True, execl_file=None,
     try:
         try:
             device = frida.get_usb_device()
+            if device.name == 'iPhone':
+                all_devices = frida.enumerate_devices()
+                for dev in all_devices:
+                    if dev.id in ['local','socket'] or dev.name == 'iPhone':
+                        continue
+                    device = dev
         except:
             device = frida.get_remote_device()
         print('\033[93m','='*20,device,'='*20,'\033[0m')
@@ -128,7 +134,7 @@ def frida_hook(app_name, use_module, wait_time=0, is_show=True, execl_file=None,
 
     if execl_file:
         workbook = xlwt.Workbook(encoding='utf-8')
-        worksheet = workbook.add_sheet('App_privacy_compliance_testing')
+        worksheet = workbook.add_sheet(app_name)
         # 标题字体
         title_style = xlwt.XFStyle()
         title_font = xlwt.Font()

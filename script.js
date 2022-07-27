@@ -362,20 +362,15 @@ function getBluetooth() {
     ]);
 }
 
-function customHook() {
-    var action = '用户自定义hook';
-
-    //自定义hook函数，可自行添加。格式如下：
-    // hook('com.zhengjim.myapplication.HookTest', [
-    //     {'methodName': 'getPassword', 'action': action, 'messages': '获取zhengjim密码'},
-    //     {'methodName': 'getUser', 'action': action, 'messages': '获取zhengjim用户名'},
-    // ]);
-
-    action='收发广播';
+//获取广播相关信息
+//用于判断自启动、关联启动 
+function getIntent(){
+    
+    var action='收发广播';
 
     hook('com.android.server.am.BroadcastQueue', [
-        {'methodName': 'processNextBroadcast', 'action': action, 'messages': '处理接收的广播'},
-    ]);
+        {'methodName': 'deliverToRegisteredReceiverLocked', 'action': action, 'messages': '处理接收的广播'},
+    ]);//这里需要 hook system_server 理论上无法成功
 
     hook('android.app.ContextImpl', [
         {'methodName': 'sendBroadcast', 'action': action, 'messages': '发送广播'},
@@ -404,6 +399,17 @@ function customHook() {
 
 }
 
+function customHook() {
+    var action = '用户自定义hook';
+
+    //自定义hook函数，可自行添加。格式如下：
+    // hook('com.zhengjim.myapplication.HookTest', [
+    //     {'methodName': 'getPassword', 'action': action, 'messages': '获取zhengjim密码'},
+    //     {'methodName': 'getUser', 'action': action, 'messages': '获取zhengjim用户名'},
+    // ]);
+
+}
+
 function useModule(moduleList) {
     var _module = {
         'permission': [checkRequestPermission],
@@ -414,6 +420,7 @@ function useModule(moduleList) {
         'network': [getNetwork],
         'camera': [getCamera],
         'bluetooth': [getBluetooth],
+        'intent': [getIntent],
         'custom': [customHook]
     };
     var _m = Object.keys(_module);
