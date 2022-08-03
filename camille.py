@@ -4,6 +4,7 @@ import time
 import argparse
 import signal
 import os
+local_path = os.path.dirname(os.path.realpath(__file__))
 import xlwt
 import random
 
@@ -121,7 +122,6 @@ def frida_hook(app_name, use_module, wait_time=0, is_show=True, execl_file=None,
                     device = dev
         except:
             device = frida.get_remote_device()
-        print('\033[93m','='*20,device,'='*20,'\033[0m')
         pid = app_name if isattach else device.spawn([app_name])
     except Exception as e:
         print("[*] hook error")
@@ -168,7 +168,7 @@ def frida_hook(app_name, use_module, wait_time=0, is_show=True, execl_file=None,
         content_style.alignment = alignment
         content_style.alignment.wrap = 1
 
-    with open("./script.js", encoding="utf-8") as f:
+    with open(local_path+"/script.js", encoding="utf-8") as f:
         script_read = f.read()
 
     if wait_time:
